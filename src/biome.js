@@ -9,9 +9,23 @@ module.exports = (options) => {
 
 class Biome extends EventEmitter {
     constructor (options) {
+        super()
     }
 
-    async getEvents (type) {
-        return [ { ts: Date.now, type: type, body: "zb2rhZp3WapJaG6DQizqEP3SruMVScn35vixhgGMAyarNYoae" } ]
+/*
+    {
+        'ver': 1,
+            'ts': 1531764520.1234,
+            'from': { name: 'kiosk_2_hallway' },
+            'type': 'seed', 
+            'msg': { // ... ref to IA metadata }
+    }
+*/
+
+    async getEvents (type='seed') {
+        return [ {
+            ts: Date.now() / 1000,
+            type: 'seed',
+            msg: "zb2rhZp3WapJaG6DQizqEP3SruMVScn35vixhgGMAyarNYoae" } ]
     }
 }
