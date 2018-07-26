@@ -4,6 +4,7 @@ const EventEmitter = require('events')
 const PSA = require('peer-star-app')
 
 // FIXME: magic constants, bad!
+const msgVer = 1
 const kioskPeers = [] // FIXME
 //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
 const keys = '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo' // TODO: replace w/RO key by default
@@ -56,7 +57,9 @@ class Biome extends EventEmitter {
     }
 */
 
-    async getEvents (type='seed') {
+    // hopefully we don't need to worry about concurrency here
+    // TODO: add type='seed' filter
+    getEvents () {
         if(!this._started) {
             console.error('event log not running, call .start() first')
             return
@@ -79,7 +82,7 @@ class Biome extends EventEmitter {
         }
         // TODO: undefinedness checks
         const e = {
-            ver: 1,
+            ver: msgVer,
             ts: Date.now(),
             from,
             type,
