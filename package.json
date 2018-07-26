@@ -8,5 +8,6 @@
   "scripts": {
     "start": "node scripts/start.js",
     "keypair": "node scripts/keypair.js"
-  }
+  },
+  "main": "src/biome.js"
 }
