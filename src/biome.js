@@ -3,12 +3,13 @@
 const EventEmitter = require('events')
 const PSA = require('peer-star-app')
 
-// FIXME: magic constants, bad!
 const msgVer = 1
-const kioskPeers = [] // FIXME
-//const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
-const keys = '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo' // TODO: replace w/RO key by default
-const nonce = '9632'
+const defaults = {
+    kioskPeers = [], // FIXME
+    //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
+    keys = '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
+    nonce = '9632'
+}
 
 module.exports = (options) => {
       return new Biome(options)
@@ -18,9 +19,11 @@ class Biome extends EventEmitter {
     constructor (options) {
         super()
 
+        this._config = Object.assign({}, defaults, options)
+
         this._psa = PSA('distributed-gardens-biome', {
             ipfs: {
-                swarm: kioskPeers
+                swarm: this._config.kioskPeers
             }
         })
         this._started = false
@@ -31,11 +34,11 @@ class Biome extends EventEmitter {
         await this._psa.start()
         console.log('biome started')
         this._events = await this._psa.collaborate(
-            'events' + nonce,
+            'events' + this._config.nonce,
             // TODO: extend gset with duck typing on ts
             'gset',
             {
-                keys
+                this._config.keys
             }
         )
         console.log('synchronizing events log')
