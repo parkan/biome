@@ -5,10 +5,10 @@ const PSA = require('peer-star-app')
 
 const msgVer = 1
 const defaults = {
-    kioskPeers = [], // FIXME
+    kioskPeers: [], // FIXME
     //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
-    keys = '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
-    nonce = '9632'
+    keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
+    nonce: '9632' // change to abandon previous log
 }
 
 module.exports = (options) => {
@@ -38,7 +38,7 @@ class Biome extends EventEmitter {
             // TODO: extend gset with duck typing on ts
             'gset',
             {
-                this._config.keys
+                keys: this._config.keys
             }
         )
         console.log('synchronizing events log')
@@ -61,14 +61,17 @@ class Biome extends EventEmitter {
 */
 
     // hopefully we don't need to worry about concurrency here
-    // TODO: add type='seed' filter
-    getEvents () {
+    getEvents (type='*') {
         if(!this._started) {
             console.error('event log not running, call .start() first')
             return
         }
 
-        return this._eventsChrono
+        if(type === '*') {
+            return this._eventsChrono
+        } else {
+            return this._eventsChrono.filter(e => e.type === type)
+        }
 
         /*
         return [ {
