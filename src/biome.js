@@ -12,5 +12,6 @@ class Biome extends EventEmitter {
     }
 
     async getEvents (type) {
+        return [ { ts: Date.now, type: type, body: "zb2rhZp3WapJaG6DQizqEP3SruMVScn35vixhgGMAyarNYoae" } ]
     }
 }
