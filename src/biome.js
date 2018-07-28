@@ -23,7 +23,8 @@ class Biome extends EventEmitter {
 
         this._psa = PSA('distributed-gardens-biome', {
             ipfs: {
-                swarm: this._config.kioskPeers
+                swarm: this._config.kioskPeers,
+                repo: this._config.repo
             }
         })
         this._started = false
