@@ -35,6 +35,12 @@ class Biome extends EventEmitter {
         this._eventsChrono = Array.from(this._events.shared.value()).sort((a,b) => a.ts < b.ts)
     }
 
+    _whatChanged(prev, current) {
+        // NOTE: will automatically convert Set/array args
+        const changed = [...current].filter((v) => ! new Set(prev).has(v))
+        return new Set(changed)
+    }
+
     async start () {
         await this._psa.start()
         console.log('biome started')
@@ -50,8 +56,13 @@ class Biome extends EventEmitter {
         this._sync()
 
         this._events.on('state changed', (fromSelf) => {
+            const changed = this._whatChanged(this._eventsChrono, this._events.shared.value())
             this._sync()
-            this.emit('state changed')
+            this.emit(
+                'state changed',
+                fromSelf,
+                changed
+            )
         })
 
         this._started = true
