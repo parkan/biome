@@ -8,7 +8,7 @@ const defaults = {
     kioskPeers: [], // FIXME
     //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
     keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
-    nonce: '9636' // change to abandon previous log
+    nonce: '11112' // change to abandon previous log
 }
 const seedPeers = [
     //'/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star',
@@ -36,8 +36,20 @@ class Biome extends EventEmitter {
         this._eventsChrono = []
     }
 
-    _sync() {
-        this._eventsChrono = Array.from(this._events.shared.value()).sort((a,b) => a.ts < b.ts)
+    async _readIpfs(path) {
+        try {
+            const buf = await this._psa.ipfs.files.cat(path)
+            return JSON.parse(buf.toString('utf-8'))
+        } catch(err) {
+            console.error('could not get path "' + path + '": ' + err)
+            return undefined
+        }
+    }
+
+    async _sync() {
+        const eventsP = [...this._events.shared.value()].map(path => this._readIpfs(path))
+        const events = await Promise.all(eventsP)
+        this._eventsChrono = events.sort((a,b) => a.ts < b.ts)
     }
 
     /*
@@ -60,16 +72,17 @@ class Biome extends EventEmitter {
             }
         )
         console.log('synchronizing events log')
-        this._sync()
+        await this._sync()
 
-        this._events.on('state changed', (fromSelf) => {
-            this._sync()
+        this._events.on('state changed', async (fromSelf) => {
+            await this._sync()
             this.emit(
                 'state changed',
                 fromSelf
             )
         })
 
+        /*
         this._events.shared.on('change', (change) => {
             const added = change.add
             switch(added.type) {
@@ -80,6 +93,7 @@ class Biome extends EventEmitter {
             }
             this.emit('new event', added)
         })
+        */
 
         this._started = true
     }
@@ -120,7 +134,6 @@ class Biome extends EventEmitter {
             console.error('event log not running, call .start() first')
             return
         }
-        // TODO: undefinedness checks
         const e = {
             ver: msgVer,
             ts: Date.now(),
@@ -128,6 +141,8 @@ class Biome extends EventEmitter {
             type,
             msg
         }
-        this._events.shared.add(e)
+        const buf = Buffer.from(JSON.stringify(e))
+        const res = await this._psa.ipfs.files.add(buf)
+        this._events.shared.add(res[0].path)
     }
 }
