@@ -82,9 +82,10 @@ class Biome extends EventEmitter {
             )
         })
 
-        /*
-        this._events.shared.on('change', (change) => {
-            const added = change.add
+        this._events.shared.on('change', async (change) => {
+            const addedPath = change.add
+            const added = await this._readIpfs(addedPath)
+
             switch(added.type) {
                 case 'link':
                 case 'seed':
@@ -93,7 +94,6 @@ class Biome extends EventEmitter {
             }
             this.emit('new event', added)
         })
-        */
 
         this._started = true
     }
@@ -120,13 +120,6 @@ class Biome extends EventEmitter {
         } else {
             return this._eventsChrono.filter(e => e.type === type)
         }
-
-        /*
-        return [ {
-            ts: Date.now() / 1000,
-            type: 'seed',
-            msg: "zb2rhZp3WapJaG6DQizqEP3SruMVScn35vixhgGMAyarNYoae" } ]
-        */
     }
 
     async addEvent({from, type, msg}) {
