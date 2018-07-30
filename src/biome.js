@@ -10,6 +10,10 @@ const defaults = {
     keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
     nonce: '9633' // change to abandon previous log
 }
+const seedPeers = [
+    //'/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star',
+    '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star'
+]
 
 module.exports = (options) => {
       return new Biome(options)
@@ -23,7 +27,7 @@ class Biome extends EventEmitter {
 
         this._psa = PSA('distributed-gardens-biome', {
             ipfs: {
-                swarm: this._config.kioskPeers,
+                swarm: this._config.kioskPeers.concat(seedPeers),
                 repo: this._config.repo
             }
         })
