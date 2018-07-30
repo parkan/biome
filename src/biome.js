@@ -8,7 +8,7 @@ const defaults = {
     kioskPeers: [], // FIXME
     //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
     keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
-    nonce: '9634' // change to abandon previous log
+    nonce: '9636' // change to abandon previous log
 }
 const seedPeers = [
     //'/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star',
@@ -40,11 +40,13 @@ class Biome extends EventEmitter {
         this._eventsChrono = Array.from(this._events.shared.value()).sort((a,b) => a.ts < b.ts)
     }
 
+    /*
     _whatChanged(prev, current) {
         // NOTE: will automatically convert Set/array args
         const changed = [...current].filter((v) => ! new Set(prev).has(v))
         return new Set(changed)
     }
+    */
 
     async start () {
         await this._psa.start()
@@ -61,13 +63,22 @@ class Biome extends EventEmitter {
         this._sync()
 
         this._events.on('state changed', (fromSelf) => {
-            const changed = this._whatChanged(this._eventsChrono, this._events.shared.value())
             this._sync()
             this.emit(
                 'state changed',
-                fromSelf,
-                changed
+                fromSelf
             )
+        })
+
+        this._events.shared.on('change', (change) => {
+            const added = change.add
+            switch(added.type) {
+                case 'link':
+                case 'seed':
+                    this.emit(added.type, added)
+                    break;
+            }
+            this.emit('change', added)
         })
 
         this._started = true
@@ -84,7 +95,6 @@ class Biome extends EventEmitter {
     }
 */
 
-    // hopefully we don't need to worry about concurrency here
     getEvents (type='*') {
         if(!this._started) {
             console.error('event log not running, call .start() first')
