@@ -5,16 +5,20 @@ const PSA = require('peer-star-app')
 
 const msgVer = 1
 const defaults = {
-    kioskPeers: [], // FIXME
-    //const kioskPeers = [ '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star' ] // put kiosk peers in here
+    bootstrap: [
+        // TODO: add multiaddrs for all RPis in here
+    ],
+    swarm: [
+        '/dns4/ws-star2.sjc.dwebops.pub/tcp/443/wss/p2p-websocket-star',
+        '/dns4/relay.decentralizedweb.net/tcp/9090'
+    ],
+    relay: {
+        relayWSAddr: '/dns4/relay.decentralizedweb.net/tcp/4004/wss/ipfs/QmPdHHgEr1gKbMuhiBf6545BL7mxaKbmCKbaJE7yY4CkBg',
+        apiAddr: '/dns4/relay.decentralizedweb.net/tcp/5004/'
+    },
     keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
     nonce: '11112' // change to abandon previous log
 }
-const seedPeers = [
-    //'/dns4/wrtc-star.discovery.libp2p.io/tcp/443/wss/p2p-webrtc-star',
-    '/dns4/ws-star.discovery.libp2p.io/tcp/443/wss/p2p-websocket-star',
-    '/ip4/127.0.0.1/tcp/9090/ws/p2p-websocket-star'
-]
 
 module.exports = (options) => {
       return new Biome(options)
@@ -28,8 +32,9 @@ class Biome extends EventEmitter {
 
         this._psa = PSA('distributed-gardens-biome', {
             ipfs: {
-                swarm: this._config.kioskPeers.concat(seedPeers),
-                repo: this._config.repo
+                swarm: this._config.swarm,
+                repo: this._config.repo,
+                relay: this._config.ipfs
             }
         })
         this._started = false
