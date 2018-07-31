@@ -89,6 +89,8 @@ class Biome extends EventEmitter {
             switch(added.type) {
                 case 'link':
                 case 'seed':
+                case 'scan':
+                case 'setinfo':
                     this.emit('new ' + added.type, added)
                     break;
             }
