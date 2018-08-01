@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "peer-star-app": "0.5.6"
+    "peer-star-app": "0.5.7"
   },
   "scripts": {
     "start": "node scripts/start.js",
