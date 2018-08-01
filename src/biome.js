@@ -37,7 +37,7 @@ class Biome extends EventEmitter {
             ipfs: {
                 swarm: this._config.swarm,
                 repo: this._config.repo,
-                relay: this._config.ipfs
+                relay: this._config.relay
             }
         })
         this._started = false
