@@ -85,6 +85,7 @@ class Biome extends EventEmitter {
             {
                 keys: this._config.keys
             }
+        )
         console.log('synchronizing events log')
         await this._sync()
 
