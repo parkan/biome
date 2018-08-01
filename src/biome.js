@@ -9,7 +9,7 @@ const defaults = {
         // TODO: add multiaddrs for all RPis in here
     ],
     swarm: [
-        //'/dns4/relay.decentralizedweb.net/tcp/9090/ws/p2p-websocket-star',
+        '/dns4/relay.decentralizedweb.net/tcp/9091/wss/p2p-websocket-star',
         '/dns4/ws-star1.par.dwebops.pub/tcp/443/wss/p2p-websocket-star/'
     ],
     relay: {
