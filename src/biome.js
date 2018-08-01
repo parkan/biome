@@ -14,7 +14,10 @@ const defaults = {
     ],
     relay: {
         relayWSAddr: '/dns4/relay.decentralizedweb.net/tcp/4004/wss/ipfs/QmPdHHgEr1gKbMuhiBf6545BL7mxaKbmCKbaJE7yY4CkBg',
-        apiAddr: '/dns4/relay.decentralizedweb.net/tcp/5004/'
+        apiAddr: {
+            host: 'relay.decentralizedweb.net',
+            port: 5004
+        }
     },
     keys: '4XTTMA1FxhTNufWa7LmW5MvMw2zEgUWP7G5SuwzU4epmRmPam-K3TgUUKyYR7sbt61ej8jnhdbQVLUaGsawW1QHs2nzFpoXVcNaMiyXictHKPz1NQPeRgbDcqqLroatJbwkMeo3kHnUqQtyGZGfgxqXUF3y5Wm3fPkTiRs2ftakJWjRF7ZpLq7Mnfo', // TODO: replace w/RO key by default
     nonce: '11113' // change to abandon previous log
