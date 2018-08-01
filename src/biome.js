@@ -79,6 +79,12 @@ class Biome extends EventEmitter {
                 keys: this._config.keys
             }
         )
+        this._archive = await this._psa.collaborate(
+            'archive' + this._config.nonce,
+            'gset',
+            {
+                keys: this._config.keys
+            }
         console.log('synchronizing events log')
         await this._sync()
 
@@ -147,5 +153,17 @@ class Biome extends EventEmitter {
         const buf = Buffer.from(JSON.stringify(e))
         const res = await this._psa.ipfs.files.add(buf)
         this._events.shared.add(res[0].path)
+
+        if(type === 'seed') {
+            const a = {
+                from,
+                msg
+            }
+            const a_buf = Buffer.from(JSON.stringify(a))
+            const a_res = await this._psa.ipfs.files.add(a_buf)
+            this._archive.shared.add(a_res[0].path)
+        }
+
+        // TODO: if `seed` then add to archive collab
     }
 }
